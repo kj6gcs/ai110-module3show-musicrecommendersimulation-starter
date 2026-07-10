@@ -12,7 +12,6 @@ class Song:
     artist: str
     genre: str
     mood: str
-    energy: float
     tempo_bpm: float
     valence: float
     danceability: float
@@ -26,7 +25,6 @@ class UserProfile:
     """
     favorite_genre: str
     favorite_mood: str
-    target_energy: float
     likes_acoustic: bool
 
 class Recommender:
