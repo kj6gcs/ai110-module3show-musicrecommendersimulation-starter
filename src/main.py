@@ -11,9 +11,29 @@ You will implement the functions in recommender.py:
 
 from recommender import load_songs, recommend_songs
 
+# Candidate personas from the Phase 2 design step (see README.md), saved here
+# for later stress-testing against the recommender.
+INTENSE_ROCK_PROFILE = {
+    "genre": "rock",
+    "mood": "intense",
+    "tempo_bpm": 140,
+    "valence": 0.50,
+    "danceability": 0.55,
+    "likes_acoustic": False,
+}
+
+CHILL_LOFI_PROFILE = {
+    "genre": "lofi",
+    "mood": "chill",
+    "tempo_bpm": 75,
+    "valence": 0.58,
+    "danceability": 0.60,
+    "likes_acoustic": True,
+}
+
 
 def main() -> None:
-    songs = load_songs("data/songs.csv") 
+    songs = load_songs("data/songs.csv")
 
     # Starter example profile
     user_prefs = {"genre": "pop", "mood": "happy", "tempo_bpm": 120}

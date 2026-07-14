@@ -9,3 +9,43 @@ id,title,artist,genre,mood,tempo_bpm,valence,danceability,acousticness
 8,Night Drive Loop,Neon Echo,synthwave,moody,110,0.49,0.73,0.22
 9,Focus Flow,LoRoom,lofi,focused,80,0.59,0.60,0.78
 10,Rooftop Lights,Indigo Parade,indie pop,happy,124,0.81,0.82,0.35
+11,Back In Black,AC/DC,rock,intense,96,0.55,0.55,0.05
+12,Thunderstruck,AC/DC,rock,intense,133,0.45,0.50,0.02
+13,Big Balls,AC/DC,rock,playful,128,0.75,0.60,0.05
+14,White & Nerdy,Weird Al Yankovic,novelty,playful,85,0.80,0.75,0.10
+15,Eat It,Weird Al Yankovic,novelty,playful,110,0.78,0.70,0.10
+16,Amish Paradise,Weird Al Yankovic,novelty,playful,90,0.70,0.65,0.15
+17,Ring of Fire,Johnny Cash,country,passionate,120,0.65,0.55,0.60
+18,Folsom Prison Blues,Johnny Cash,country,somber,100,0.40,0.45,0.55
+19,Jolene,Dolly Parton,country,anxious,78,0.35,0.40,0.70
+20,9 to 5,Dolly Parton,country,upbeat,106,0.85,0.80,0.25
+21,Friends in Low Places,Garth Brooks,country,rowdy,130,0.75,0.65,0.45
+22,Man! I Feel Like a Woman!,Shania Twain,country,confident,132,0.82,0.78,0.20
+23,Beautiful Crazy,Luke Combs,country,romantic,72,0.60,0.35,0.65
+24,Whiskey Glasses,Morgan Wallen,country,heartbroken,100,0.35,0.50,0.40
+25,Follow Your Arrow,Kacey Musgraves,country,carefree,120,0.80,0.65,0.40
+26,Before He Cheats,Carrie Underwood,country,vengeful,130,0.55,0.60,0.25
+27,Tennessee Whiskey,Chris Stapleton,country,soulful,60,0.55,0.40,0.55
+28,Bohemian Rhapsody,Queen,rock,epic,72,0.45,0.35,0.30
+29,Don't Stop Me Now,Queen,rock,euphoric,156,0.90,0.70,0.05
+30,Billie Jean,Michael Jackson,funk,moody,117,0.60,0.90,0.05
+31,Stayin' Alive,Bee Gees,disco,confident,104,0.75,0.88,0.10
+32,Smells Like Teen Spirit,Nirvana,grunge,angsty,117,0.35,0.45,0.02
+33,Lose Yourself,Eminem,hip hop,determined,86,0.45,0.60,0.03
+34,HUMBLE.,Kendrick Lamar,hip hop,confident,75,0.35,0.75,0.02
+35,Crazy In Love,Beyoncé,r&b,euphoric,99,0.75,0.80,0.05
+36,I Wanna Dance with Somebody,Whitney Houston,pop,euphoric,119,0.90,0.85,0.10
+37,Three Little Birds,Bob Marley,reggae,peaceful,76,0.85,0.65,0.50
+38,One Love,Bob Marley,reggae,hopeful,68,0.70,0.55,0.55
+39,One More Time,Daft Punk,edm,euphoric,123,0.85,0.88,0.02
+40,Summer,Calvin Harris,edm,uplifting,128,0.80,0.80,0.03
+41,Enter Sandman,Metallica,metal,dark,123,0.30,0.40,0.02
+42,Paranoid,Black Sabbath,metal,aggressive,162,0.35,0.45,0.02
+43,Blitzkrieg Bop,The Ramones,punk,rebellious,177,0.55,0.60,0.03
+44,Blowin' in the Wind,Bob Dylan,folk,reflective,108,0.45,0.30,0.85
+45,The Sound of Silence,Simon & Garfunkel,folk,melancholic,65,0.25,0.25,0.85
+46,Dreams,Fleetwood Mac,rock,wistful,120,0.55,0.60,0.35
+47,Someone Like You,Adele,pop,heartbroken,67,0.20,0.25,0.75
+48,Shape of You,Ed Sheeran,pop,flirty,96,0.85,0.85,0.15
+49,Eine kleine Nachtmusik,Mozart,classical,elegant,140,0.75,0.30,0.98
+50,Symphony No. 5,Beethoven,classical,dramatic,108,0.40,0.20,0.98

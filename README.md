@@ -19,17 +19,30 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+**My design:**
 
-Some prompts to answer:
+Real-world platforms like Spotify blend two approaches: collaborative filtering (what similar users engaged with) and content-based filtering (the attributes of a song itself). This simulation only implements content-based filtering — there's a single simulated user and no interaction history from other users to learn from, so there's nothing for a collaborative approach to work with here.
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+My version prioritizes **genre** as the strongest signal, since it's the most reliable predictor of whether a listener tolerates a song's overall sound (production style, instrumentation) — a genre mismatch is a harder dealbreaker than a mood mismatch. **Mood** is weighted as a secondary refinement on top of an already-acceptable genre, since mood can vary widely within a single genre or artist (a comedic AC/DC song and an intense AC/DC song are both "rock"). **Tempo** is scored by closeness to the user's preferred pace, rather than simply favoring faster or slower songs — a user who likes 90 BPM songs shouldn't get penalized for a song being slower any more than for it being faster.
 
-You can include a simple diagram or bullet list if helpful.
+- **`Song` features:** `genre`, `mood`, `tempo_bpm`, `valence`, `danceability`, `acousticness`
+- **`UserProfile` fields:** `favorite_genre`, `favorite_mood`, `target_tempo`, `target_valence`, `target_danceability`, `likes_acoustic`
+- **How songs are chosen:** every song in the catalog is scored against the user profile, then sorted highest-to-lowest and the top `k` are returned
+
+**Algorithm Recipe (finalized):**
+
+| Component | Points | Method |
+|---|---|---|
+| Genre match | +2.0 | exact match |
+| Mood match | +1.0 | exact match |
+| Tempo closeness | up to +1.0 | closeness score, scaled by weight, based on distance from `target_tempo` |
+| Valence closeness | up to +0.5 | closeness score, scaled by weight, based on distance from `target_valence` |
+| Danceability closeness | up to +0.5 | closeness score, scaled by weight, based on distance from `target_danceability` |
+| Acoustic alignment | +0.5 | flat bonus if `likes_acoustic` matches whether the song's `acousticness` is above or below 0.5 |
+
+Max possible score: 5.5.
+
+**Expected bias:** genre and mood together are only worth 3.0 of the 5.5 possible points, while tempo + valence + danceability together can add up to 2.0. That means a song with the *wrong* genre could still rank competitively on numeric closeness alone if its other attributes line up well with the user's targets — this system may under-penalize genre mismatches more than intended, and it's something to watch for during Phase 4 testing.
 
 ---
 
