@@ -34,3 +34,31 @@
 
 - Finalized the full Algorithm Recipe and documented it, along with an expected-bias note, in `README.md`'s "How The System Works" section: genre match (+2.0), mood match (+1.0), tempo closeness (up to +1.0), valence closeness (up to +0.5), danceability closeness (up to +0.5), and acoustic alignment (+0.5), for a max possible score of 5.5.
 - Added `data_flow_diagram.md` to the project root: an ungraded Mermaid flowchart sketching the Phase 2 Step 4 planning aid (Input → per-song scoring loop → sort/rank → top-k output).
+
+---
+
+- **Bug fix (discovered by Claude):** `src/main.py` imported `from recommender import ...`, which fails with `ModuleNotFoundError` under the documented `python -m src.main` run command (no top-level `recommender` module exists; it lives at `src/recommender.py`). Changed to `from src.recommender import ...`, matching the import style already used in `tests/test_recommender.py`.
+- Implemented `load_songs()` in `src/recommender.py` using `csv.DictReader`, converting `id` to `int` and `tempo_bpm`/`valence`/`danceability`/`acousticness` to `float` so they're ready for scoring math. Verified via `python -m src.main`, which now prints `Loaded songs: 50`.
+
+---
+
+- Implemented `score_song()` in `src/recommender.py` using the finalized Algorithm Recipe (genre match +2.0, mood match +1.0, tempo/valence/danceability closeness up to +1.0/+0.5/+0.5, acoustic alignment +0.5), returning both a numeric score and a list of human-readable reasons.
+  - Added two helper functions: `normalize_tempo()` (scales `tempo_bpm` to 0-1) and `closeness_score()` (rewards values close to a target rather than simply higher/lower ones).
+  - Uses `.get()`/`in` checks on `user_prefs` so partial profiles (like the 3-key starter `user_prefs`) score correctly without requiring every field.
+  - Verified with a quick ad hoc script scoring the first 3 songs against the starter profile — results matched the expected recipe behavior.
+
+---
+
+- Implemented `recommend_songs()` in `src/recommender.py`: scores every song in the catalog via `score_song()`, ranks with `sorted()` (chosen over `.sort()` since it returns a new list rather than mutating in place), and returns the top `k` as `(song, score, explanation)` tuples with reasons joined into a readable string.
+  - Verified via `python -m src.main`: the starter pop/happy/120 BPM profile correctly returns "Sunrise City" as the top recommendation (full genre + mood match, near-perfect tempo closeness).
+
+---
+
+- Cleaned up the CLI output formatting in `src/main.py`: numbered each recommendation, added the artist name, and echoed the active user profile above the results list.
+  - Swapped an em dash for a plain hyphen after the Windows terminal mis-rendered it as `�` under the console's active encoding.
+  - Pasted the verified `python -m src.main` output into `README.md`'s "Sample Recommendation Output" section as a fenced code block.
+
+---
+
+- Condensed the docstrings on `load_songs()`, `score_song()`, and `recommend_songs()` in `src/recommender.py` to single lines, per the Phase 3 documentation step.
+  - Re-verified with `python -m src.main` and `pytest` (2 passed) after the cleanup — no behavior changes.

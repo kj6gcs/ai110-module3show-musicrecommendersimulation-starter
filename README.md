@@ -96,6 +96,29 @@ Paste a sample of your recommender's output here as a text block so a reader can
 #   3. ...
 ```
 
+**Actual output** (`python -m src.main`, default pop/happy/120 BPM profile):
+
+```
+User profile: genre=pop, mood=happy, tempo_bpm=120
+
+Top recommendations:
+
+1. Sunrise City by Neon Echo - Score: 3.99
+   Because: genre match (+2.0), mood match (+1.0), tempo closeness (+0.99)
+
+2. I Wanna Dance with Somebody by Whitney Houston - Score: 2.99
+   Because: genre match (+2.0), tempo closeness (+0.99)
+
+3. Gym Hero by Max Pulse - Score: 2.92
+   Because: genre match (+2.0), tempo closeness (+0.93)
+
+4. Shape of You by Ed Sheeran - Score: 2.85
+   Because: genre match (+2.0), tempo closeness (+0.85)
+
+5. Someone Like You by Adele - Score: 2.67
+   Because: genre match (+2.0), tempo closeness (+0.67)
+```
+
 **Screenshot or video** _(optional)_: <!-- Insert a screenshot or demo video link here -->
 
 ---
