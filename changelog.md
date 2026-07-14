@@ -62,3 +62,24 @@
 
 - Condensed the docstrings on `load_songs()`, `score_song()`, and `recommend_songs()` in `src/recommender.py` to single lines, per the Phase 3 documentation step.
   - Re-verified with `python -m src.main` and `pytest` (2 passed) after the cleanup — no behavior changes.
+
+---
+
+- Added Phase 4 Step 1 stress-test profiles to `src/main.py`: formalized the starter profile as `HAPPY_POP_PROFILE`, and added two adversarial profiles (`CONFLICTING_PROFILE` and `NO_GENRE_MOOD_MATCH_PROFILE`) designed to probe internally contradictory or unmatchable preferences.
+  - Updated `main()` to loop over all five profiles via a `STRESS_TEST_PROFILES` dict and print labeled recommendations for each.
+  - Ran the CLI and pasted the real output for all five profiles into `README.md`'s "Sample Recommendation Output" section as separate fenced code blocks, replacing the old placeholder text.
+  - Notable finding: the "Conflicting" profile (metal + peaceful + fast + acoustic-loving) still recommended an aggressive Black Sabbath song as #1, since the genre match (+2.0) outweighed the mismatched mood/valence — a concrete example of the bias already predicted in the README.
+
+---
+
+- Added `ROBBYS_PROFILE` to `src/main.py`'s `STRESS_TEST_PROFILES`: a personal taste profile (rock, intense, 115 BPM, valence/danceability 0.55, non-acoustic) built from the developer's own stated preferences, used to sanity-check the recommender against real musical intuition rather than a synthetic persona.
+  - Ran it against the recommender and pasted the output at the top of `README.md`'s "Sample Recommendation Output" section, ahead of the five stress-test profiles.
+  - Notable finding: compared to the generic "Intense Rock" profile, lowering the target tempo from 140 to 115 BPM flipped the #1 result from "Thunderstruck" to "Back In Black" — driven by a near-exact valence/danceability match rather than tempo. "Dreams" by Fleetwood Mac also placed in the top 5 with no mood match, which the developer confirmed isn't a song they'd normally pick, despite it being a defensible score-wise recommendation.
+- Added a paragraph to `model_card.md`'s Section 7 (Evaluation) summarizing which profiles were tested, what was looked for, what surprised us (the adversarial-profile bias and the personal-profile tempo-flip/"Dreams" finding), and the direct Intense-Rock-vs-personal-profile comparison.
+
+---
+
+- Ran two Phase 4 Step 3 sensitivity experiments in `src/recommender.py`, each applied temporarily and reverted afterward (confirmed via `python -m src.main` and `pytest`, 2 passed):
+  - **Weight shift:** halved genre match (+2.0 → +1.0) and doubled tempo closeness (up to +1.0 → up to +2.0). Both classical songs fell out of the "No genre+mood match" profile's top 5 entirely, and a mood-only match leapfrogged two genre matches in the Happy Pop profile.
+  - **Feature removal:** commented out the mood-match scoring entirely. On my own profile, "Dreams" by Fleetwood Mac jumped to #1 over "Back In Black" and "Thunderstruck" — demoting songs I actually like in favor of one I'd already said isn't my style.
+  - Documented both experiments in first person in `README.md`'s "Experiments You Tried" section.
