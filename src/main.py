@@ -9,6 +9,8 @@ You will implement the functions in recommender.py:
 - recommend_songs
 """
 
+from tabulate import tabulate
+
 from src.recommender import load_songs, recommend_songs
 
 # Candidate personas from the Phase 2 design step (see README.md), saved here
@@ -84,12 +86,20 @@ STRESS_TEST_PROFILES = {
 def print_recommendations(profile_name: str, user_prefs: dict, songs: list) -> None:
     recommendations = recommend_songs(user_prefs, songs, k=5)
     print(f"=== {profile_name} ===")
-    print(f"User profile: {user_prefs}")
-    print("\nTop recommendations:\n")
-    for rank, (song, score, explanation) in enumerate(recommendations, start=1):
-        print(f"{rank}. {song['title']} by {song['artist']} - Score: {score:.2f}")
-        print(f"   Because: {explanation}")
-        print()
+    print(f"User profile: {user_prefs}\n")
+
+    rows = [
+        [rank, song["title"], song["artist"], f"{score:.2f}", explanation]
+        for rank, (song, score, explanation) in enumerate(recommendations, start=1)
+    ]
+    print(tabulate(
+        rows,
+        headers=["Rank", "Title", "Artist", "Score", "Reasons"],
+        tablefmt="grid",
+        maxcolwidths=[None, 20, 18, None, 50],
+        disable_numparse=True,
+    ))
+    print()
 
 
 def main() -> None:

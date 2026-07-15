@@ -17,6 +17,11 @@ class Song:
     valence: float
     danceability: float
     acousticness: float
+    release_decade: int
+    mood_tag_primary: str
+    mood_tag_secondary: str
+    billboard_peak_at_release: Optional[int]
+    billboard_peak_overall: Optional[int]
 
 @dataclass
 class UserProfile:
@@ -30,6 +35,9 @@ class UserProfile:
     target_valence: float
     target_danceability: float
     likes_acoustic: bool
+    target_decade: int
+    target_mood_tag: str
+    prefers_mainstream_hits: bool
 
 class Recommender:
     """
@@ -64,6 +72,11 @@ def load_songs(csv_path: str) -> List[Dict]:
                 "valence": float(row["valence"]),
                 "danceability": float(row["danceability"]),
                 "acousticness": float(row["acousticness"]),
+                "release_decade": int(row["release_decade"].rstrip("s")),
+                "mood_tag_primary": row["mood_tag_primary"],
+                "mood_tag_secondary": row["mood_tag_secondary"],
+                "billboard_peak_at_release": int(row["billboard_peak_at_release"]) if row["billboard_peak_at_release"] else None,
+                "billboard_peak_overall": int(row["billboard_peak_overall"]) if row["billboard_peak_overall"] else None,
             })
     print(f"Loaded songs: {len(songs)}")
     return songs
@@ -77,6 +90,12 @@ def closeness_score(value: float, target: float, max_diff: float) -> float:
     """Rewards values close to a target rather than simply higher/lower ones."""
     diff = abs(value - target)
     return max(0.0, 1 - (diff / max_diff))
+
+def song_popularity(billboard_peak_overall: Optional[int]) -> float:
+    """Converts a Billboard peak position into a 0-1 popularity score; non-charting songs score 0.0."""
+    if billboard_peak_overall is None:
+        return 0.0
+    return max(0.0, min(1.0, 1 - (billboard_peak_overall - 1) / 99))
 
 def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     """Scores a song against user_prefs using the finalized Algorithm Recipe, returning (score, reasons)."""
@@ -116,12 +135,51 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
             score += 0.5
             reasons.append("acoustic alignment (+0.5)")
 
+    if "release_decade" in user_prefs:
+        decade_points = closeness_score(song["release_decade"], user_prefs["release_decade"], max_diff=60) * 0.5
+        score += decade_points
+        reasons.append(f"decade closeness (+{decade_points:.2f})")
+
+    if "mood_tag" in user_prefs:
+        target_tag = user_prefs["mood_tag"]
+        if target_tag in (song["mood_tag_primary"], song["mood_tag_secondary"]):
+            score += 0.5
+            reasons.append("mood tag match (+0.5)")
+
+    if "prefers_mainstream_hits" in user_prefs:
+        song_is_mainstream = song_popularity(song["billboard_peak_overall"]) > 0.5
+        if user_prefs["prefers_mainstream_hits"] == song_is_mainstream:
+            score += 0.5
+            reasons.append("popularity alignment (+0.5)")
+
     return score, reasons
 
+DIVERSITY_ARTIST_PENALTY = 1.0
+
 def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, str]]:
-    """Scores every song against user_prefs and returns the top k, highest score first."""
-    scored = [(song, *score_song(user_prefs, song)) for song in songs]
-    # sorted() returns a new list rather than mutating `scored` in place, which
-    # matters here since `scored` isn't otherwise needed after ranking.
-    ranked = sorted(scored, key=lambda entry: entry[1], reverse=True)
-    return [(song, score, ", ".join(reasons)) for song, score, reasons in ranked[:k]]
+    """
+    Scores every song against user_prefs and greedily picks the top k, applying a
+    diversity penalty (Challenge 3) to any song whose artist is already in the
+    results, so one artist can't dominate the list unless clearly better than the rest.
+    """
+    remaining = [(song, *score_song(user_prefs, song)) for song in songs]
+    selected = []
+    seen_artists = set()
+
+    while remaining and len(selected) < k:
+        def effective_score(entry):
+            song, score, _ = entry
+            penalty = DIVERSITY_ARTIST_PENALTY if song["artist"] in seen_artists else 0.0
+            return score - penalty
+
+        remaining.sort(key=effective_score, reverse=True)
+        song, score, reasons = remaining.pop(0)
+
+        if song["artist"] in seen_artists:
+            score -= DIVERSITY_ARTIST_PENALTY
+            reasons = reasons + [f"diversity penalty (-{DIVERSITY_ARTIST_PENALTY:.1f}, {song['artist']} already in results)"]
+
+        selected.append((song, score, reasons))
+        seen_artists.add(song["artist"])
+
+    return [(song, score, ", ".join(reasons)) for song, score, reasons in selected]

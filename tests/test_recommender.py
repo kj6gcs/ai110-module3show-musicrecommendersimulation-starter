@@ -12,6 +12,11 @@ def make_small_recommender() -> Recommender:
             valence=0.9,
             danceability=0.8,
             acousticness=0.2,
+            release_decade=2020,
+            mood_tag_primary="joy",
+            mood_tag_secondary="optimism",
+            billboard_peak_at_release=5,
+            billboard_peak_overall=5,
         ),
         Song(
             id=2,
@@ -23,6 +28,11 @@ def make_small_recommender() -> Recommender:
             valence=0.6,
             danceability=0.5,
             acousticness=0.9,
+            release_decade=2020,
+            mood_tag_primary="calm",
+            mood_tag_secondary="focus",
+            billboard_peak_at_release=None,
+            billboard_peak_overall=None,
         ),
     ]
     return Recommender(songs)
@@ -36,6 +46,9 @@ def test_recommend_returns_songs_sorted_by_score():
         target_valence=0.9,
         target_danceability=0.8,
         likes_acoustic=False,
+        target_decade=2020,
+        target_mood_tag="joy",
+        prefers_mainstream_hits=True,
     )
     rec = make_small_recommender()
     results = rec.recommend(user, k=2)
@@ -54,6 +67,9 @@ def test_explain_recommendation_returns_non_empty_string():
         target_valence=0.9,
         target_danceability=0.8,
         likes_acoustic=False,
+        target_decade=2020,
+        target_mood_tag="joy",
+        prefers_mainstream_hits=True,
     )
     rec = make_small_recommender()
     song = rec.songs[0]
